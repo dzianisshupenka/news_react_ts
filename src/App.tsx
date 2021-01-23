@@ -32,6 +32,7 @@ const App: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [editing, setEditing] = useState<INews>();
   const [editinIndex, setEditingIndex] = useState(-1);
+  const [searchValue, setSearchValue] = useState('');
 
   const allKeywords: Array<string> = ['allNews'];
     
@@ -96,6 +97,21 @@ const App: React.FC = () => {
     setVisible(prev => !prev);
   }
 
+  const searchNews = (value: string) => {
+    if(value.length === 0) {
+      return news;
+    }
+    return news.filter((item) => {
+        return item.title.toLowerCase().indexOf(value.toLowerCase()) > -1 || item.text.toLowerCase().indexOf(value.toLowerCase()) > -1
+    })
+  }
+
+  const onSearch = (value: string) => {
+    setSearchValue(value);
+  }
+
+  const visibleNews = searchNews(searchValue);
+
   return (
     <BrowserRouter>
     <div className="container">
@@ -104,7 +120,7 @@ const App: React.FC = () => {
       <div className="content">
         <Switch>
           <Route render={() => (
-            <MainPage allKeywords={allKeywords} filter={filterNews} news={news} remove={removeItem} edit={editItem} />
+            <MainPage onSearch={onSearch} allKeywords={allKeywords} filter={filterNews} news={visibleNews} remove={removeItem} edit={editItem} />
           )} path="/" exact />
           <Route component={HelpPage} path="/help"/>
         </Switch>

@@ -76,7 +76,7 @@ body {
 }
 
 .addform-container {
-  position: absolute;
+  position: fixed;
   display: none;
   align-items: center;
   justify-content: center;
@@ -135,6 +135,10 @@ body {
   background-color: rgb(185, 185, 185);
 }
 
+.search-button {
+  margin-left: 15px;
+}
+
 button, 
 button:active, 
 button:focus {
@@ -154,5 +158,22 @@ button:focus {
 @media screen and (max-width: 1200px) {
   .content {
     width: 100vw;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .add-form {
+    width: 100vw;
+    height: 80vh;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  .inputs-style {
+    width: 90vw;
+  }
+  
+  .textarea-style {
+    width: 90vw;
   }
 }
