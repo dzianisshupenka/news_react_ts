@@ -46,7 +46,8 @@ const AddForm: React.FC<AddProps> = (props) => {
         title: title,
         text: text,
         author: author,
-        keywords: keywords.split(' ')
+        keywords: keywords.split(' '),
+        date: Date.now()
         }
         props.addNews(result);
         console.log(result);

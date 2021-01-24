@@ -3,4 +3,5 @@ export interface INews {
     text: string
     author: string
     keywords: Array<string>
+    date: number
 }

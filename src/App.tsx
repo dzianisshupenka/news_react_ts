@@ -13,7 +13,8 @@ const initialNews = [
       author: "Сергей",
       keywords: [
           "погода", "Минск"
-      ]
+      ],
+      date: 1611356848019
   },
   {
       title: "Чемпионат по волейболу в Минске",
@@ -21,7 +22,8 @@ const initialNews = [
       author: "Иван",
       keywords: [
           "спорт", "волейбол"
-      ]
+      ],
+      date: 1610346848019
   }
 ]
 
@@ -33,6 +35,7 @@ const App: React.FC = () => {
   const [editing, setEditing] = useState<INews>();
   const [editinIndex, setEditingIndex] = useState(-1);
   const [searchValue, setSearchValue] = useState('');
+  const [selectValue, setSelectValue] = useState('new');
 
   const allKeywords: Array<string> = ['allNews'];
     
@@ -110,7 +113,34 @@ const App: React.FC = () => {
     setSearchValue(value);
   }
 
-  const visibleNews = searchNews(searchValue);
+  const onSortSelect = (value: string) => {
+    setSelectValue(value);
+  }
+
+  const dateSort = (term: string, items: INews[]) => {
+    switch(term) {
+      case "new":
+        return items.sort((a,b) => b.date - a.date);
+      case "old":
+        return items.sort((a,b) => a.date - b.date);
+      case "last24":
+        return items.filter((item) => {
+          return item.date > (Date.now() - 86400000);
+        });
+      case "lastWeek":
+        return items.filter((item) => {
+          return item.date > (Date.now() - 604800000);
+        });
+      case "lastMonth":
+        return items.filter((item) => {
+          return item.date > (Date.now() - 2592000000);
+        });
+      default:
+        return items;
+    }
+  }
+
+  const visibleNews = dateSort(selectValue, searchNews(searchValue));
 
   return (
     <BrowserRouter>
@@ -120,7 +150,15 @@ const App: React.FC = () => {
       <div className="content">
         <Switch>
           <Route render={() => (
-            <MainPage onSearch={onSearch} allKeywords={allKeywords} filter={filterNews} news={visibleNews} remove={removeItem} edit={editItem} />
+            <MainPage 
+              onSearch={onSearch} 
+              onSelect={onSortSelect}
+              allKeywords={allKeywords} 
+              filter={filterNews} 
+              news={visibleNews} 
+              remove={removeItem} 
+              edit={editItem} 
+            />
           )} path="/" exact />
           <Route component={HelpPage} path="/help"/>
         </Switch>

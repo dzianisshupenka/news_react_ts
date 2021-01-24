@@ -13,6 +13,9 @@ interface NewsItemProps {
 }
 
 const NewsItem: React.FC<NewsItemProps> = (props) => {
+
+    const date = new Date(props.item.date).toUTCString();
+
     return (
         <div className="news-item-container">
             <h3 className="news-header">{props.item.title}</h3>
@@ -26,7 +29,10 @@ const NewsItem: React.FC<NewsItemProps> = (props) => {
             </div>
             <p className="main-text">{props.item.text}</p>
             <div className="keywords">
-                {props.item.keywords.map((i,index) => <button onClick={() => props.filter(i)} className="keyword-button" key={index}>#{i}</button>)}
+                <div>
+                    {props.item.keywords.map((i,index) => <button onClick={() => props.filter(i)} className="keyword-button" key={index}>#{i}</button>)}
+                </div>
+                <div>{date}</div>
             </div>
         </div>
     )

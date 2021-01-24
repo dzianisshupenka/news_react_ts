@@ -73,6 +73,8 @@ body {
 
 .keywords {
   flex: 1;
+  display: flex;
+  justify-content: space-between;
 }
 
 .addform-container {
@@ -135,6 +137,12 @@ body {
   background-color: rgb(185, 185, 185);
 }
 
+.search-pannel {
+  width: 95%;
+  display: flex;
+  justify-content: space-between;
+}
+
 .search-button {
   margin-left: 15px;
 }
@@ -143,6 +151,10 @@ button,
 button:active, 
 button:focus {
     outline: none;
+}
+
+button {
+  margin-left: 15px;
 }
 
 .news-item-buttons img {
