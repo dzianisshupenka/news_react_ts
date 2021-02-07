@@ -3,8 +3,10 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Header from './components/header';
 import HelpPage from './pages/help';
 import MainPage from './pages/main';
-import { INews } from './interfaces';
+import { INews, IUsers } from './interfaces';
 import AddForm from './components/AddForm';
+import RegisterForm from './components/RegisterForm';
+import LoginForm from './components/LoginForm';
 
 const initialNews = [
   {
@@ -25,6 +27,23 @@ const initialNews = [
       ],
       date: 1610346848019
   }
+];
+
+const users = [
+  {
+    nickname: "user1",
+    firstName: "Denis",
+    lastNane: "Shupenka",
+    email: "imxrayz@gmail.com",
+    password: "1234"
+  },
+  {
+    nickname: "demoUser",
+    firstName: "Demo",
+    lastNane: "User",
+    email: "demo@gmail.com",
+    password: "1111"
+  }
 ]
 
 const App: React.FC = () => {
@@ -32,6 +51,10 @@ const App: React.FC = () => {
   const [news, setNews] = useState<INews[]>(initialNews);
   const [allNews, setAllNews] = useState<INews[]>(initialNews);
   const [visible, setVisible] = useState(false);
+  const [loginVisible, setLoginVisible] = useState(false);
+  const [registerVisible, setRegisterVisible] = useState(false);
+  const [isAuth, setAuth] = useState(false);
+  const [loggedUser, setLoggedUser] = useState<IUsers>();
   const [editing, setEditing] = useState<INews>();
   const [editinIndex, setEditingIndex] = useState(-1);
   const [searchValue, setSearchValue] = useState('');
@@ -66,6 +89,31 @@ const App: React.FC = () => {
     }
   }
 
+  const registerUser = (user: IUsers) => {
+    const chekedNick = users.filter(i => {
+      return i.nickname === user.nickname;
+    });
+    const chekedEmail = users.filter(i => {
+      return i.email === user.email;
+    });
+    if (chekedEmail.length > 0) {
+      return "Пользователь с таким email уже зарегистрирован";
+    } else if (chekedNick.length > 0) {
+      return "Пользователь с таким никнеймом уже зарегистрирован";
+    }
+    users.push(user);
+    return 'Регистрация прошла успешно, войдите в систему';
+  }
+
+  const loggedUserHandler = (user: IUsers) => {
+    setLoggedUser(user);
+  } 
+
+  const logoutHandler = () => {
+    setAuth(false);
+    setLoggedUser(undefined);
+  }
+
   const removeItem = (id:number) => {
     // eslint-disable-next-line no-restricted-globals
     let result = confirm("Вы действительно хотите удалить новость?");
@@ -78,12 +126,20 @@ const App: React.FC = () => {
 
   }
 
-  const filterNews = (keyword: string) => {
-    if(keyword === 'allNews') {
+  const filterNews = (keyword?: string, author?: string) => {
+    if (keyword === 'allNews') {
+      console.log('all');
       setNews(allNews)
-    } else {
+    } else if (keyword) {
+      console.log('key');
       const filtered = allNews.filter(item => {
         return item.keywords.includes(keyword);
+      });
+      setNews(filtered);
+    } else if (author) {
+      console.log(author);
+      const filtered = allNews.filter(item => {
+        return item.author === author;
       });
       setNews(filtered);
     }
@@ -97,7 +153,19 @@ const App: React.FC = () => {
   }
 
   const toogleVisible = () => {
-    setVisible(prev => !prev);
+    if(isAuth) {
+      setVisible(prev => !prev);
+    } else {
+      setLoginVisible(prev => !prev);
+    } 
+  }
+
+  const toogleRegisterVisible = () => {
+    setRegisterVisible(prev => !prev);
+  }
+
+  const toogleLoginVisible = () => {
+    setLoginVisible(prev => !prev);
   }
 
   const searchNews = (value: string) => {
@@ -107,6 +175,23 @@ const App: React.FC = () => {
     return news.filter((item) => {
         return item.title.toLowerCase().indexOf(value.toLowerCase()) > -1 || item.text.toLowerCase().indexOf(value.toLowerCase()) > -1
     })
+  }
+  const login = (nick: string, password: string) => {
+    const user = users.find((item) => {
+      if (item.nickname === nick && item.password === password) {
+        return item;
+      } else {
+        return false;
+      }
+    });
+    if (user) {
+      loggedUserHandler(user);
+      setAuth(true);
+      console.log(loggedUser);
+      return 'ok';
+    } else {
+      return "Пользователь не найден"
+    }
   }
 
   const onSearch = (value: string) => {
@@ -145,8 +230,10 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
     <div className="container">
-      <Header show={toogleVisible} />
-      <AddForm editing={editing} addNews={addNews} visible={visible} hide={toogleVisible} />
+      <Header logoutHandler={logoutHandler} isAuth={isAuth} loggedUser={loggedUser} show={toogleVisible} showRegister={toogleRegisterVisible} showLogin={toogleLoginVisible} />
+      <AddForm loggedUser={loggedUser} isAuth={isAuth} editing={editing} addNews={addNews} visible={visible} hide={toogleVisible} />
+      <RegisterForm registerUser={registerUser} visible={registerVisible} hide={toogleRegisterVisible} />
+      <LoginForm login={login} visible={loginVisible} hide={toogleLoginVisible} />
       <div className="content">
         <Switch>
           <Route render={() => (

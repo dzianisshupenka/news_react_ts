@@ -13,7 +13,8 @@ body {
   position: fixed;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  padding-right: 50px;
   width: 100vw;
   height: 60px;
   background-color: rgb(158, 158, 158);
@@ -35,6 +36,9 @@ body {
   background-color: rgb(201, 201, 201);
   border: none;
   border-radius: 5px;
+}
+.navbar-btn:nth-child(2) {
+  margin-right: 50px;
 }
 
 .content {
@@ -123,6 +127,22 @@ body {
   height: 500px;
   background-color: #fff;
   padding: 30px;
+}
+
+.status-message {
+  padding: 15px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.logged-user {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.author {
+  font-size: 18px;
+  font-weight: 500;
 }
 
 .buttons {

@@ -9,7 +9,7 @@ interface NewsItemProps {
     index: number
     remove(id: number):void
     edit(id: number):void
-    filter(keyword: string): void
+    filter(keyword?: string, author?: string): void
 }
 
 const NewsItem: React.FC<NewsItemProps> = (props) => {
@@ -19,6 +19,7 @@ const NewsItem: React.FC<NewsItemProps> = (props) => {
     return (
         <div className="news-item-container">
             <h3 className="news-header">{props.item.title}</h3>
+            <span className="author">Автор: <button onClick={() => props.filter(undefined, props.item.author)} className="keyword-button">{props.item.author}</button></span>
             <div className="buttons">
                 <button onClick={() => props.edit(props.index)} className="news-item-buttons">
                     <img src={Edit} alt="edit" />

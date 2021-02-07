@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { INews } from '../../interfaces';
+import { INews, IUsers } from '../../interfaces';
 
 interface AddProps {
     addNews(newItem: INews): void
     visible: boolean
     editing?: INews
+    isAuth: boolean
     hide(): void
+    loggedUser?: IUsers
 }
 
 const AddForm: React.FC<AddProps> = (props) => {
 
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
-    const [author, setAuthor] = useState('');
     const [keywords, setKeywords] = useState('');
 
     useEffect(() => {
         if (props.editing) {
             setTitle(props.editing.title);
             setText(props.editing.text);
-            setAuthor(props.editing.author);
             setKeywords(props.editing.keywords.join(' '));
         }
     }, [props.editing]);
@@ -33,10 +33,6 @@ const AddForm: React.FC<AddProps> = (props) => {
         setText(event.target.value);
     }
 
-    const AuthorHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAuthor(event.target.value);
-    }
-
     const KeywordsHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setKeywords(event.target.value);
     }
@@ -45,7 +41,7 @@ const AddForm: React.FC<AddProps> = (props) => {
         const result = {
         title: title,
         text: text,
-        author: author,
+        author: props.loggedUser ? props.loggedUser.firstName : '',
         keywords: keywords.split(' '),
         date: Date.now()
         }
@@ -53,14 +49,12 @@ const AddForm: React.FC<AddProps> = (props) => {
         console.log(result);
         setTitle('');
         setText('');
-        setAuthor('');
         setKeywords('');
     }
 
     const classes = ["addform-container"]
 
-
-    if (props.visible === true) {
+    if (props.visible === true && props.isAuth) {
         classes.push("visible");
     }
     
@@ -78,10 +72,6 @@ const AddForm: React.FC<AddProps> = (props) => {
                         <textarea value={text} onChange={TextHandler} className="textarea-style" name="itemText" />
                     </label>
                     <label className="inputs">
-                        Автор:
-                        <input value={author} onChange={AuthorHandler} className="inputs-style" type="text" name="author" />
-                    </label>
-                    <label className="inputs">
                         Ключевые слова (через пробел):
                         <input value={keywords} onChange={KeywordsHandler} className="inputs-style" type="text" name="keywords" />
                     </label>
@@ -94,7 +84,6 @@ const AddForm: React.FC<AddProps> = (props) => {
                     props.hide();
                     setTitle('');
                     setText('');
-                    setAuthor('');
                     setKeywords('');
                     }}>Отмена</button>
             </div>
