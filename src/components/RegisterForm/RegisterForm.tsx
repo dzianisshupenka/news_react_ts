@@ -86,37 +86,37 @@ const RegisterForm: React.FC<RegisterProps> = (props) => {
     
     return(
         <div className={classes.join(' ')}>
-            <div className="add-form">
+            <div className="add-form-register">
                 <form className="form-inputs">
                     <label className="inputs">
                         Никнэйм:
-                        <input value={nickName} onChange={nickNameHandler} className="inputs-style" type="text" name="title" />
+                        <input value={nickName} onChange={nickNameHandler} className="inputs-style-login" type="text" name="title" />
                     </label>
                     <label className="inputs">
                         Имя:
-                        <input value={name} onChange={nameHandler} className="inputs-style" type="text" name="title" />
+                        <input value={name} onChange={nameHandler} className="inputs-style-login" type="text" name="title" />
                     </label>
                     <label className="inputs">
                         Фамилия:
-                        <input value={lastName} onChange={lastNameHandler} className="inputs-style" type="text" name="author" />
+                        <input value={lastName} onChange={lastNameHandler} className="inputs-style-login" type="text" name="author" />
                     </label>
                     <label className="inputs">
                         Электронная почта:
-                        <input value={email} onChange={emailHandler} className="inputs-style" type="text" name="keywords" />
+                        <input value={email} onChange={emailHandler} className="inputs-style-login" type="text" name="keywords" />
                     </label>
                     <label className="inputs">
                         Пароль:
-                        <input value={password} onChange={passwordHandler} className="inputs-style" type="password" name="keywords" />
+                        <input value={password} onChange={passwordHandler} className="inputs-style-login" type="password" name="keywords" />
                     </label>
                     <label className="inputs">
                         Повторите пароль:
-                        <input value={confirmPassword} onChange={confirmPasswordHandler} className="inputs-style" type="password" name="keywords" />
+                        <input value={confirmPassword} onChange={confirmPasswordHandler} className="inputs-style-login" type="password" name="keywords" />
                     </label>
                 </form>
-                <button onClick={() => registerHandler()}>
+                <button className="navbar-btn" onClick={() => registerHandler()}>
                     Зарегистрироваться
                 </button>
-                <button onClick={() => {
+                <button className="navbar-btn" onClick={() => {
                     props.hide();
                     setStatusMessage('');
                     setNickName('');

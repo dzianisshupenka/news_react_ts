@@ -50,19 +50,19 @@ const LoginForm: React.FC<LoginProps> = (props) => {
     
     return(
         <div className={classes.join(' ')}>
-            <div className="add-form">
+            <div className="add-form-login">
                 <form className="form-inputs">
                     <label className="inputs">
                         Никнэйм:
-                        <input value={nickName} onChange={nickNameHandler} className="inputs-style" type="text" name="title" />
+                        <input value={nickName} onChange={nickNameHandler} className="inputs-style-login" type="text" name="title" />
                     </label>
                     <label className="inputs">
                         Пароль:
-                        <input value={password} onChange={passwordHandler} className="inputs-style" type="password" name="keywords" />
+                        <input value={password} onChange={passwordHandler} className="inputs-style-login" type="password" name="keywords" />
                     </label>
                 </form>
-                <button onClick={() => onLogin()}>Войти</button>
-                <button onClick={() => {
+                <button className="navbar-btn" onClick={() => onLogin()}>Войти</button>
+                <button className="navbar-btn" onClick={() => {
                     props.hide();
                     setNickName('');
                     setPassword('');

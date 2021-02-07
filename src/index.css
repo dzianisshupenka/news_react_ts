@@ -2,6 +2,14 @@ body {
   margin: 0;
 }
 
+.help-page {
+  padding: 15px;
+}
+
+.help-page p {
+  font-size: 22px;
+}
+
 .container {
   height: 100vh;
   display: flex;
@@ -110,6 +118,12 @@ body {
   background-color: rgb(190, 190, 190);
 }
 
+.inputs-style-login {
+  width: 360px;
+  border: none;
+  background-color: rgb(190, 190, 190);
+}
+
 .textarea-style {
   width: 400px;
   height: 150px;
@@ -127,6 +141,20 @@ body {
   height: 500px;
   background-color: #fff;
   padding: 30px;
+}
+
+.add-form-register {
+  width: 400px;
+  height: 500px;
+  background-color: #fff;
+  padding: 20px;
+}
+
+.add-form-login {
+  width: 400px;
+  height: 300px;
+  background-color: #fff;
+  padding: 20px;
 }
 
 .status-message {
