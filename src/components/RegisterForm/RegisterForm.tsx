@@ -66,7 +66,8 @@ const RegisterForm: React.FC<RegisterProps> = (props) => {
             firstName: name,
             lastNane: lastName,
             email: email,
-            password: password
+            password: password,
+            isAdmin: false
         }
         const res = props.registerUser(user);
         setStatusMessage(res);

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Header from './components/header';
 import HelpPage from './pages/help';
@@ -7,6 +7,7 @@ import { INews, IUsers } from './interfaces';
 import AddForm from './components/AddForm';
 import RegisterForm from './components/RegisterForm';
 import LoginForm from './components/LoginForm';
+import AdminPage from './pages/admin';
 
 const initialNews = [
   {
@@ -16,7 +17,8 @@ const initialNews = [
       keywords: [
           "погода", "Минск"
       ],
-      date: 1611356848019
+      date: 1611356848019,
+      link: 'localhost:3000'
   },
   {
       title: "Чемпионат по волейболу в Минске",
@@ -25,26 +27,34 @@ const initialNews = [
       keywords: [
           "спорт", "волейбол"
       ],
-      date: 1610346848019
+      date: 1610346848019,
+      link: 'localhost:3000'
   }
 ];
 
-const users = [
+let users = [
   {
-    nickname: "user1",
+    nickname: "admin",
     firstName: "Denis",
     lastNane: "Shupenka",
     email: "imxrayz@gmail.com",
-    password: "1234"
+    password: "1234",
+    isAdmin: true
   },
   {
     nickname: "demoUser",
     firstName: "Demo",
     lastNane: "User",
     email: "demo@gmail.com",
-    password: "1111"
+    password: "1111",
+    isAdmin: false
   }
-]
+];
+
+const rssUrls = [
+  "https://news.tut.by/rss/index.rss",
+  "https://lenta.ru/rss/top7"
+];
 
 const App: React.FC = () => {
 
@@ -55,10 +65,78 @@ const App: React.FC = () => {
   const [registerVisible, setRegisterVisible] = useState(false);
   const [isAuth, setAuth] = useState(false);
   const [loggedUser, setLoggedUser] = useState<IUsers>();
+  const [usersList, setUsersList] = useState<IUsers[]>(users);
   const [editing, setEditing] = useState<INews>();
   const [editinIndex, setEditingIndex] = useState(-1);
   const [searchValue, setSearchValue] = useState('');
   const [selectValue, setSelectValue] = useState('new');
+  const [rssChanels, setRssChanels] = useState(rssUrls);
+
+  useEffect(() => {
+
+    const Users = localStorage.getItem("users");
+    if (typeof Users === 'string') {
+      const usersList = JSON.parse(Users);
+      setUsersList(usersList);
+    } else {
+      localStorage.setItem("users", JSON.stringify(users));
+      setUsersList(users);
+    }
+
+    const user = localStorage.getItem("loggedUser");
+    if( typeof user === 'string' ) {
+      const loggedUser = JSON.parse(user)
+      loggedUserHandler(loggedUser);
+      setAuth(true);
+    }
+
+    rssChanels.forEach(url => {
+      fetch(url)
+        .then(response => response.text())
+        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+        .then(data => {
+          const items = data.querySelectorAll("item");
+          items.forEach(el => {
+            let title =  el.querySelector("title")?.textContent;
+            title = typeof title == 'string' ? title : 'Неизвестный формат';
+            let author = el.querySelector("creator") 
+            ? el.querySelector("creator")?.textContent : el.querySelector("name") 
+            ? el.querySelector("name")?.textContent : el.querySelector("author")?.textContent;
+            author = typeof author == 'string' ? author : 'Автор неизвестен';
+            let text = el.querySelector("description")?.textContent;
+            text = typeof text == 'string' ? text : 'Нет содержания';
+            let date = el.querySelector("pubDate")?.textContent;
+            let link = el.querySelector("link")?.textContent;
+            link = typeof link == 'string' ? link : "localhost:3000";
+            const itemDate = date ? Date.parse(date) : Date.now();
+
+            const keywords = [author];
+            const itemNews = {       
+              title,
+              author,
+              text,
+              keywords,
+              date: itemDate,
+              link: link
+            }
+            addNews(itemNews)
+          })
+        });
+    })
+  }, [])
+
+  //RSS chanels handlers
+
+  const addChannel = (channel:string) => {
+    setRssChanels(prev => [channel, ...prev])
+  };
+
+  const removeChannel = (id:number) => {
+    const filtered = rssChanels.filter((item, index) => id !== index);
+    setRssChanels(filtered);
+  };
+
+  //News handlers
 
   const allKeywords: Array<string> = ['allNews'];
     
@@ -89,31 +167,6 @@ const App: React.FC = () => {
     }
   }
 
-  const registerUser = (user: IUsers) => {
-    const chekedNick = users.filter(i => {
-      return i.nickname === user.nickname;
-    });
-    const chekedEmail = users.filter(i => {
-      return i.email === user.email;
-    });
-    if (chekedEmail.length > 0) {
-      return "Пользователь с таким email уже зарегистрирован";
-    } else if (chekedNick.length > 0) {
-      return "Пользователь с таким никнеймом уже зарегистрирован";
-    }
-    users.push(user);
-    return 'Регистрация прошла успешно, войдите в систему';
-  }
-
-  const loggedUserHandler = (user: IUsers) => {
-    setLoggedUser(user);
-  } 
-
-  const logoutHandler = () => {
-    setAuth(false);
-    setLoggedUser(undefined);
-  }
-
   const removeItem = (id:number) => {
     // eslint-disable-next-line no-restricted-globals
     let result = confirm("Вы действительно хотите удалить новость?");
@@ -123,49 +176,28 @@ const App: React.FC = () => {
       setNews(filtered);
       setAllNews(filtered);
     }
-
   }
 
   const filterNews = (keyword?: string, author?: string) => {
     if (keyword === 'allNews') {
-      console.log('all');
       setNews(allNews)
     } else if (keyword) {
-      console.log('key');
       const filtered = allNews.filter(item => {
         return item.keywords.includes(keyword);
       });
       setNews(filtered);
     } else if (author) {
-      console.log(author);
       const filtered = allNews.filter(item => {
         return item.author === author;
       });
       setNews(filtered);
     }
-
   }
 
   const editItem = (id: number) => {
     setEditing(news[id]);
     setVisible(true);
     setEditingIndex(id);
-  }
-
-  const toogleVisible = () => {
-    if(isAuth) {
-      setVisible(prev => !prev);
-    } else {
-      setLoginVisible(prev => !prev);
-    } 
-  }
-
-  const toogleRegisterVisible = () => {
-    setRegisterVisible(prev => !prev);
-  }
-
-  const toogleLoginVisible = () => {
-    setLoginVisible(prev => !prev);
   }
 
   const searchNews = (value: string) => {
@@ -175,23 +207,6 @@ const App: React.FC = () => {
     return news.filter((item) => {
         return item.title.toLowerCase().indexOf(value.toLowerCase()) > -1 || item.text.toLowerCase().indexOf(value.toLowerCase()) > -1
     })
-  }
-  const login = (nick: string, password: string) => {
-    const user = users.find((item) => {
-      if (item.nickname === nick && item.password === password) {
-        return item;
-      } else {
-        return false;
-      }
-    });
-    if (user) {
-      loggedUserHandler(user);
-      setAuth(true);
-      console.log(loggedUser);
-      return 'ok';
-    } else {
-      return "Пользователь не найден"
-    }
   }
 
   const onSearch = (value: string) => {
@@ -227,6 +242,70 @@ const App: React.FC = () => {
 
   const visibleNews = dateSort(selectValue, searchNews(searchValue));
 
+  //Register and login handlers
+
+  const registerUser = (user: IUsers) => {
+    const chekedNick = users.filter(i => {
+      return i.nickname === user.nickname;
+    });
+    const chekedEmail = users.filter(i => {
+      return i.email === user.email;
+    });
+    if (chekedEmail.length > 0) {
+      return "Пользователь с таким email уже зарегистрирован";
+    } else if (chekedNick.length > 0) {
+      return "Пользователь с таким никнеймом уже зарегистрирован";
+    }
+    setUsersList(prev => [...prev, user]);
+    localStorage.setItem("users", JSON.stringify(usersList));
+    return 'Регистрация прошла успешно, войдите в систему';
+  }
+
+  const loggedUserHandler = (user: IUsers) => {
+    setLoggedUser(user);
+  } 
+
+  const logoutHandler = () => {
+    setAuth(false);
+    setLoggedUser(undefined);
+    localStorage.removeItem("loggedUser");
+  }
+
+  const toogleVisible = () => {
+    if(isAuth) {
+      setVisible(prev => !prev);
+    } else {
+      setLoginVisible(prev => !prev);
+    } 
+  }
+
+  const toogleRegisterVisible = () => {
+    setRegisterVisible(prev => !prev);
+  }
+
+  const toogleLoginVisible = () => {
+    setLoginVisible(prev => !prev);
+  }
+
+
+  const login = (nick: string, password: string) => {
+    const user = usersList.find((item) => {
+      if (item.nickname === nick && item.password === password) {
+        return item;
+      } else {
+        return false;
+      }
+    });
+    if (user) {
+      loggedUserHandler(user);
+      localStorage.setItem('loggedUser', JSON.stringify(user));
+      setAuth(true);
+      return 'ok';
+    } else {
+      return "Пользователь не найден"
+    }
+  }
+
   return (
     <BrowserRouter>
     <div className="container">
@@ -248,6 +327,15 @@ const App: React.FC = () => {
             />
           )} path="/" exact />
           <Route component={HelpPage} path="/help"/>
+          <Route render={() => (
+            <AdminPage 
+              loggedUser={loggedUser}
+              chanels={rssChanels}
+              addChannel={addChannel}
+              removeChannel={removeChannel}
+            />
+          )
+          } path="/admin" />
         </Switch>
       </div>
     </div>

@@ -79,6 +79,11 @@ body {
   flex: 1;
 }
 
+.news-header a {
+  text-decoration: none;
+  color: rgb(43, 43, 43);
+}
+
 .main-text {
   flex: 5;
 }
@@ -179,6 +184,16 @@ body {
   right: 5px;
 }
 
+.add-button {
+  height: 25px;
+  font-size: 15px;
+  font-weight: bold;
+  width: 100px;
+  background-color: rgb(201, 201, 201);
+  border: none;
+  border-radius: 5px;
+}
+
 .news-item-buttons {
   border: none;
   margin-left: 15px;
@@ -205,6 +220,13 @@ button {
   margin-left: 15px;
 }
 
+.itemDescription img {
+  width: 72px;
+  height: 54px;
+  border: 0;
+  align-items: left; 
+}
+
 .news-item-buttons img {
   width: 20px;
   height: 20px;
@@ -213,6 +235,51 @@ button {
 .keyword-button {
   border: none;
   margin-left: 5px;
+}
+
+.currencies-container {
+  margin: 10px;
+  background-color: rgba(65, 55, 55, 0.322);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 5px 15px;
+  flex-direction: row;
+}
+
+.currency-item {
+  height: 20px;
+  padding: 0 10px;
+  margin: 0 5px;
+  background-color: rgb(209, 207, 207);
+}
+
+.currency-item-abbr {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.admin-page-container {
+  padding: 20px;
+}
+
+.admin-page-chanel {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 300px;
+  margin: 5px;
+  background-color: rgb(209, 207, 207);
+}
+
+.admin-page-chanel button {
+  border: none;
+  background-color: rgb(209, 207, 207)
+}
+
+.delete-chanel {
+  width: 15px;
+  height: 15px;
 }
 
 @media screen and (max-width: 1200px) {

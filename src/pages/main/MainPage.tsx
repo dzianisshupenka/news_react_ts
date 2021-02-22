@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import Currencies from '../../components/Currencies';
 import NewsItem from '../../components/NewsItem';
 import { INews } from '../../interfaces';
 
@@ -22,6 +23,7 @@ const MainPage: React.FC<MainPageProps> = (props) => {
 
     return (
         <div className="main-page-container">
+            <Currencies />
             <h1>Новости</h1>
             <div className="search-pannel">
                 <div>

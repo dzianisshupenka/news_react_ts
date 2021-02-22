@@ -15,10 +15,13 @@ interface NewsItemProps {
 const NewsItem: React.FC<NewsItemProps> = (props) => {
 
     const date = new Date(props.item.date).toUTCString();
+    // let div = document.createElement('div'); 
+    // div.innerHTML = props.item.text;
+    // console.log(div);
 
     return (
         <div className="news-item-container">
-            <h3 className="news-header">{props.item.title}</h3>
+            <h3 className="news-header"><a href={props.item.link}>{props.item.title}</a></h3>
             <span className="author">Автор: <button onClick={() => props.filter(undefined, props.item.author)} className="keyword-button">{props.item.author}</button></span>
             <div className="buttons">
                 <button onClick={() => props.edit(props.index)} className="news-item-buttons">
@@ -28,7 +31,7 @@ const NewsItem: React.FC<NewsItemProps> = (props) => {
                     <img src={Delete} alt="delete" />
                 </button>
             </div>
-            <p className="main-text">{props.item.text}</p>
+            <div className="itemDescription" dangerouslySetInnerHTML={{ __html: props.item.text}}></div>
             <div className="keywords">
                 <div>
                     {props.item.keywords.map((i,index) => <button onClick={() => props.filter(i)} className="keyword-button" key={index}>#{i}</button>)}

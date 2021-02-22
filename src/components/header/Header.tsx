@@ -17,6 +17,7 @@ const Header: React.FC<HeaderProps> = (props) => {
             <div>
                 <NavLink className="navbar-item" to="/">Главная</NavLink>
                 <NavLink className="navbar-item" to="/help">Помощь</NavLink>
+                {props.loggedUser?.isAdmin ? <NavLink className="navbar-item" to="/admin">Admin Page</NavLink> : null}
                 <button onClick={() => props.show()} className="navbar-btn">Добавить</button>
             </div>
             {props.loggedUser && props.isAuth ? 

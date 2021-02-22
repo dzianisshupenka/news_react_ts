@@ -43,7 +43,8 @@ const AddForm: React.FC<AddProps> = (props) => {
         text: text,
         author: props.loggedUser ? props.loggedUser.firstName : '',
         keywords: keywords.split(' '),
-        date: Date.now()
+        date: Date.now(),
+        link: 'localhost:3000'
         }
         props.addNews(result);
         console.log(result);
