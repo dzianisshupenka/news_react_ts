@@ -89,7 +89,11 @@ const App: React.FC = () => {
       loggedUserHandler(loggedUser);
       setAuth(true);
     }
+  }, [])
 
+  //RSS chanels handlers
+
+  useEffect(() => {
     rssChanels.forEach(url => {
       fetch(url)
         .then(response => response.text())
@@ -123,9 +127,7 @@ const App: React.FC = () => {
           })
         });
     })
-  }, [])
-
-  //RSS chanels handlers
+  }, [rssChanels])
 
   const addChannel = (channel:string) => {
     setRssChanels(prev => [channel, ...prev])

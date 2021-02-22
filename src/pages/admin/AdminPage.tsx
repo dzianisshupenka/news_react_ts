@@ -28,14 +28,14 @@ const AdminPage: React.FC<AdminPageProps> = (props) => {
         <div className="admin-page-container">
             <h1>Admin page</h1>
             Подключенные каналы:
-            {props.chanels.map((chanel, index) => {
+            {props.chanels.length > 0 ? props.chanels.map((chanel, index) => {
                 return <div key={index} className="admin-page-chanel">
                             {chanel}
                             <button onClick={() => props.removeChannel(index)}>
                                 <img className='delete-chanel' src={Delete} alt="delete" />
                             </button>
                         </div>
-            })}
+            }) : "Нет подключенных каналов"}
             <div>
                 <form className="form-inputs">
                         <label className="inputs">
